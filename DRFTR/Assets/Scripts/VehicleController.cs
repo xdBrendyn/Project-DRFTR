@@ -8,7 +8,7 @@ public class VehicleController : MonoBehaviour
     public groundCheck GroundCheck;
     public LayerMask drivableSurface;
 
-    public float MaxSpeed, accelaration, transitionTime = 1.0f, ReverseMultiplier = 0.35f, turn, gravity = 7f, downforce = 5f;
+    public float MaxSpeed, accelaration, BrakeForce = 0.2f, transitionTime = 1.0f, ReverseMultiplier = 0.35f, turn, gravity = 7f, downforce = 5f;
     public bool AirControl = false;
     public Rigidbody rb, carBody;
 
@@ -38,7 +38,7 @@ public class VehicleController : MonoBehaviour
     public float skidWidth;
 
 
-    private float radius, horizontalInput, verticalInput, currentTransitionForce = 0.0f;
+    private float radius, horizontalInput, verticalInput, currentTransitionForce = 0.0f, normalTurn;
     private Vector3 origin;
 
     private void Start()
@@ -48,6 +48,8 @@ public class VehicleController : MonoBehaviour
         {
             Physics.defaultMaxAngularSpeed = 100;
         }
+
+        normalTurn = turn;
     }
     private void Update()
     {
@@ -70,7 +72,6 @@ public class VehicleController : MonoBehaviour
         }
     }
 
-
     void FixedUpdate()
     {
         carVelocity = carBody.transform.InverseTransformDirection(carBody.velocity);
@@ -80,7 +81,6 @@ public class VehicleController : MonoBehaviour
             //changes friction according to sideways speed of car
             frictionMaterial.dynamicFriction = frictionCurve.Evaluate(Mathf.Abs(carVelocity.x / 100));
         }
-
 
         if (grounded())
         {
@@ -96,13 +96,27 @@ public class VehicleController : MonoBehaviour
                 carBody.AddTorque(Vector3.up * horizontalInput * sign * turn * 100 * TurnMultiplyer);
             }
 
-            //brakelogic
+            // Brake Logic
             if (Input.GetAxis("Jump") > 0.1f)
             {
-                rb.constraints = RigidbodyConstraints.FreezeRotationX;
+                // Double the turn value
+                turn = Mathf.Lerp(turn, normalTurn * 2f, Time.deltaTime / 1f);
+
+                // Calculate the current forward velocity of the car
+                float forwardVelocity = Vector3.Dot(rb.velocity, carBody.transform.forward);
+
+                // Define the maximum brake force to prevent the car from coming to a complete stop
+                float maxBrakeForce = MaxSpeed * BrakeForce; // Adjust this value as needed
+
+                // Calculate the brake force based on the forward velocity
+                float brakeForce = Mathf.Clamp(forwardVelocity * BrakeForce, -maxBrakeForce, maxBrakeForce);
+
+                // Apply the brake force in the forward direction
+                rb.AddForce(-carBody.transform.forward * brakeForce, ForceMode.Acceleration);
             }
             else
             {
+                turn = Mathf.Lerp(turn, normalTurn, Time.deltaTime / 1f);
                 rb.constraints = RigidbodyConstraints.None;
             }
 
@@ -131,7 +145,7 @@ public class VehicleController : MonoBehaviour
             }
             else if (movementMode == MovementMode.Velocity)
             {
-                if (Mathf.Abs(verticalInput) > 0.1f && Input.GetAxis("Jump") < 0.1f)
+                if (Mathf.Abs(verticalInput) > 0.1f)
                 {
                     // Check if the input is negative (indicating reverse)
                     float speedMultiplier = verticalInput > 0 ? 1.0f : ReverseMultiplier;
@@ -152,26 +166,24 @@ public class VehicleController : MonoBehaviour
                 }
             }
 
-            // down froce
+            // down force
             rb.AddForce(-transform.up * downforce * rb.mass);
 
-            //body tilt
+            // body tilt
             carBody.MoveRotation(Quaternion.Slerp(carBody.rotation, Quaternion.FromToRotation(carBody.transform.up, hit.normal) * carBody.transform.rotation, 0.12f));
         }
         else
         {
             if (AirControl)
             {
-                //turnlogic
+                // turn logic
                 float TurnMultiplyer = turnCurve.Evaluate(carVelocity.magnitude / MaxSpeed);
-
                 carBody.AddTorque(Vector3.up * horizontalInput * turn * 100 * TurnMultiplyer);
             }
 
             carBody.MoveRotation(Quaternion.Slerp(carBody.rotation, Quaternion.FromToRotation(carBody.transform.up, Vector3.up) * carBody.transform.rotation, 0.02f));
             rb.velocity = Vector3.Lerp(rb.velocity, rb.velocity + Vector3.down * gravity, Time.deltaTime * gravity);
         }
-
     }
 
     public void Visuals()
@@ -229,23 +241,5 @@ public class VehicleController : MonoBehaviour
             }
         }
         else { return false; }
-    }
-
-    private void OnDrawGizmos()
-    {
-        //debug gizmos
-        radius = rb.GetComponent<SphereCollider>().radius;
-        float width = 0.02f;
-        if (!Application.isPlaying)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(rb.transform.position + ((radius + width) * Vector3.down), new Vector3(2 * radius, 2 * width, 4 * radius));
-            if (GetComponent<BoxCollider>())
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(transform.position, GetComponent<BoxCollider>().size);
-            }
-
-        }
     }
 }
