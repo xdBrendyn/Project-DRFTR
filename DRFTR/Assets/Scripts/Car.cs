@@ -27,5 +27,5 @@ public class Car : ScriptableObject
     public string modelName;
     [Range(0, 10)] public float zeroToSixty;
     public int topSpeed;
-    public Sprite carGraphic;
+    public GameObject carModel;
 }
