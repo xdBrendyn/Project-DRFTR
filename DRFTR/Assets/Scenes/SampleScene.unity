@@ -175,6 +175,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4310856393903945634, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: turn
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: BodyTilt
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: MaxSpeed
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: ReverseSpeed
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: decelerationTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604809822959425511, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: ReverseMultiplier
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 7028954268033460586, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8607312282255403882, guid: 5c2ff9449cff0e5489c1507f3a928c55, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -97,6 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1374625626485238387}
   - component: {fileID: 2795506876371730315}
+  - component: {fileID: 218062947993848058}
   - component: {fileID: 6008994827393702488}
   - component: {fileID: 2617687859038877211}
   - component: {fileID: 7506482575073317286}
@@ -129,12 +130,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 272487271965529542}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1337f33b3654d9a4fa8f2d3f24ceb6d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   carController: {fileID: 2146709472102685902}
+--- !u!114 &218062947993848058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272487271965529542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00e0e4baba7c054fb3283e10cccbe9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carController: {fileID: 6604809822959425511}
 --- !u!96 &6008994827393702488
 TrailRenderer:
   serializedVersion: 3
@@ -5157,6 +5171,7 @@ GameObject:
   - component: {fileID: 7028954268033460586}
   - component: {fileID: 479965411259667089}
   - component: {fileID: 2146709472102685902}
+  - component: {fileID: 6604809822959425511}
   - component: {fileID: 8046960499660374862}
   - component: {fileID: 6917028566570998792}
   m_Layer: 0
@@ -5239,7 +5254,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1457277326529098446}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2d69c44041501f4aab1c355410d67b2, type: 3}
   m_Name: 
@@ -5338,6 +5353,114 @@ MonoBehaviour:
   MaxPitch: 3
   SkidSound: {fileID: 6917028566570998792}
   skidWidth: 0.13985014
+--- !u!114 &6604809822959425511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457277326529098446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd6defff94383243810fd81502826ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementMode: 0
+  GroundCheck: 0
+  drivableSurface:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  MaxSpeed: 100
+  accelaration: 20
+  transitionTime: 3
+  ReverseMultiplier: 0.5
+  turn: 20
+  gravity: 7
+  downforce: 5
+  AirControl: 0
+  rb: {fileID: 7793994746220813933}
+  carBody: {fileID: 479965411259667089}
+  frictionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 4
+      outSlope: 4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 5
+      inSlope: 4
+      outSlope: 4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  turnCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 13.671466
+      outSlope: 13.671466
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.02106388
+    - serializedVersion: 3
+      time: 0.02176705
+      value: 0.2049678
+      inSlope: 4.515987
+      outSlope: 4.515987
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.080018945
+    - serializedVersion: 3
+      time: 0.5371922
+      value: 0.97256476
+      inSlope: -0.1730383
+      outSlope: -0.1730383
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.12504984
+      outWeight: 0.15276818
+    - serializedVersion: 3
+      time: 1
+      value: 0.49161643
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  frictionMaterial: {fileID: 13400000, guid: ce8f2e0169709cc4da4d8131aec6cef1, type: 2}
+  BodyMesh: {fileID: 1735209369243520381}
+  FrontWheels:
+  - {fileID: 9186396206549624467}
+  - {fileID: 4722186824229432060}
+  RearWheels:
+  - {fileID: 3298489237303604214}
+  - {fileID: 2212221755093563665}
+  carVelocity: {x: 0, y: 0, z: 0}
+  BodyTilt: 10
+  engineSound: {fileID: 8046960499660374862}
+  minPitch: 0.3
+  MaxPitch: 3
+  SkidSound: {fileID: 6917028566570998792}
+  skidWidth: 0
 --- !u!82 &8046960499660374862
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5572,6 +5695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1293175032626107465}
   - component: {fileID: 3361073851561569982}
+  - component: {fileID: 2544048552233173964}
   - component: {fileID: 4134685795846514346}
   - component: {fileID: 3320066146669031027}
   - component: {fileID: 6054394267359004190}
@@ -5604,12 +5728,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2780857873872675645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1337f33b3654d9a4fa8f2d3f24ceb6d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   carController: {fileID: 2146709472102685902}
+--- !u!114 &2544048552233173964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2780857873872675645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00e0e4baba7c054fb3283e10cccbe9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carController: {fileID: 6604809822959425511}
 --- !u!96 &4134685795846514346
 TrailRenderer:
   serializedVersion: 3
@@ -10629,6 +10766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4230385009476841878}
   - component: {fileID: 5866240914066883738}
+  - component: {fileID: 6926710829111224936}
   - component: {fileID: 5310575433750667545}
   - component: {fileID: 8104005454542526854}
   - component: {fileID: 8762028438012382067}
@@ -10661,12 +10799,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4046509649927210333}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1337f33b3654d9a4fa8f2d3f24ceb6d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   carController: {fileID: 2146709472102685902}
+--- !u!114 &6926710829111224936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4046509649927210333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00e0e4baba7c054fb3283e10cccbe9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carController: {fileID: 6604809822959425511}
 --- !u!96 &5310575433750667545
 TrailRenderer:
   serializedVersion: 3
@@ -15500,6 +15651,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5083575138199121777}
   - component: {fileID: 8557845441427234687}
+  - component: {fileID: 6373521744465661539}
   - component: {fileID: 5709297425425721203}
   - component: {fileID: 3871992559691676120}
   - component: {fileID: 8192346625154439267}
@@ -15532,12 +15684,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4334422629969179227}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1337f33b3654d9a4fa8f2d3f24ceb6d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   carController: {fileID: 2146709472102685902}
+--- !u!114 &6373521744465661539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4334422629969179227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c00e0e4baba7c054fb3283e10cccbe9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carController: {fileID: 6604809822959425511}
 --- !u!96 &5709297425425721203
 TrailRenderer:
   serializedVersion: 3
