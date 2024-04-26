@@ -6,6 +6,7 @@ public class SkidMarks : MonoBehaviour
     private ParticleSystem smoke;
     public VehicleController carController;
     float fadeOutSpeed;
+
     private void Awake()
     {
         smoke = GetComponent<ParticleSystem>();
@@ -15,17 +16,6 @@ public class SkidMarks : MonoBehaviour
 
     }
 
-
-    private void OnEnable()
-    {
-        skidMark.enabled = true;
-    }
-    private void OnDisable()
-    {
-        skidMark.enabled = false;
-    }
-
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (carController.grounded())
@@ -52,10 +42,6 @@ public class SkidMarks : MonoBehaviour
             fadeOutSpeed += Time.deltaTime / 2;
             Color m_color = Color.Lerp(Color.black, new Color(0f, 0f, 0f, 0f), fadeOutSpeed);
             skidMark.materials[0].color = m_color;
-            if (fadeOutSpeed > 1)
-            {
-                skidMark.Clear();
-            }
         }
 
         // smoke
@@ -64,6 +50,15 @@ public class SkidMarks : MonoBehaviour
             smoke.Play();
         }
         else { smoke.Stop(); }
+    }
 
+    private void OnEnable()
+    {
+        skidMark.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        skidMark.enabled = false;
     }
 }

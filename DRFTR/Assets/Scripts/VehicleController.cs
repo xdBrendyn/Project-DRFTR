@@ -8,7 +8,7 @@ public class VehicleController : MonoBehaviour
     public groundCheck GroundCheck;
     public LayerMask drivableSurface;
 
-    public float MaxSpeed, accelaration, BrakeForce = 0.2f, transitionTime = 1.0f, ReverseMultiplier = 0.35f, turn, gravity = 7f, downforce = 5f;
+    public float MaxSpeed, accelaration, BrakeForce = 0.2f, ReverseMultiplier = 0.35f, turn, gravity = 7f, downforce = 5f, wheelRotationMultiplier = 1.8f, flipTorque = 1f;
     public bool AirControl = false;
     public Rigidbody rb, carBody;
 
@@ -38,7 +38,7 @@ public class VehicleController : MonoBehaviour
     public float skidWidth;
 
 
-    private float radius, horizontalInput, verticalInput, currentTransitionForce = 0.0f, normalTurn;
+    private float radius, horizontalInput, verticalInput, normalTurn, FWheelRotationMultiplier, rollingResistance;
     private Vector3 origin;
 
     private void Start()
@@ -50,15 +50,33 @@ public class VehicleController : MonoBehaviour
         }
 
         normalTurn = turn;
+        FWheelRotationMultiplier = wheelRotationMultiplier;
+        rollingResistance = MaxSpeed / 3f;
     }
+
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal"); //turning input
         verticalInput = Input.GetAxis("Vertical");     //accelaration input
+
+        if (Input.GetAxis("Horizontal") != 0)
+        {
+            // Calculate the target rotation speed multiplier
+            float targetMultiplier = 0.5f * wheelRotationMultiplier;
+
+            // Smoothly interpolate between the current and target rotation speed multiplier
+            FWheelRotationMultiplier = Mathf.Lerp(FWheelRotationMultiplier, targetMultiplier, 0.5f * Time.deltaTime);
+        }
+        else
+        {
+            FWheelRotationMultiplier = wheelRotationMultiplier;
+        }
+
         Visuals();
         AudioManager();
 
     }
+
     public void AudioManager()
     {
         engineSound.pitch = Mathf.Lerp(minPitch, MaxPitch, Mathf.Abs(carVelocity.z) / MaxSpeed);
@@ -130,17 +148,10 @@ public class VehicleController : MonoBehaviour
 
                     // Apply the appropriate speed multiplier based on direction
                     rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, carBody.transform.right * verticalInput * MaxSpeed / radius * speedMultiplier, accelaration * Time.deltaTime);
-
-                    // Reset the current transition force when accelerating
-                    currentTransitionForce = 0.0f;
                 }
-                else if (currentTransitionForce < 1.0f)
+                else
                 {
-                    // Gradually increase the transition force until it reaches 1.0 (full transition)
-                    currentTransitionForce += Time.deltaTime / transitionTime;
-
-                    // Apply the transition force to gradually transition from reversing to accelerating
-                    rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, currentTransitionForce);
+                    rb.AddForce(-rb.velocity.normalized * rollingResistance, ForceMode.Acceleration);
                 }
             }
             else if (movementMode == MovementMode.Velocity)
@@ -152,17 +163,10 @@ public class VehicleController : MonoBehaviour
 
                     // Apply the appropriate speed multiplier based on direction
                     rb.velocity = Vector3.Lerp(rb.velocity, carBody.transform.forward * verticalInput * MaxSpeed * speedMultiplier, accelaration / 10 * Time.deltaTime);
-
-                    // Reset the current transition force when accelerating
-                    currentTransitionForce = 0.0f;
                 }
-                else if (currentTransitionForce < 1.0f)
+                else
                 {
-                    // Gradually increase the transition force until it reaches 1.0 (full transition)
-                    currentTransitionForce += Time.deltaTime / transitionTime;
-
-                    // Apply the transition force to gradually transition from reversing to accelerating
-                    rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, currentTransitionForce);
+                    rb.AddForce(-rb.velocity.normalized * rollingResistance, ForceMode.Acceleration);
                 }
             }
 
@@ -176,12 +180,27 @@ public class VehicleController : MonoBehaviour
         {
             if (AirControl)
             {
-                // turn logic
+                // Perform front or backflips using W and S inputs
+                if (verticalInput > 0.1f)
+                {
+                    // Frontflip: rotate the car forward around the X-axis
+                    carBody.AddTorque(Vector3.right * flipTorque * 100);
+                }
+                else if (verticalInput < -0.1f)
+                {
+                    // Backflip: rotate the car backward around the X-axis
+                    carBody.AddTorque(Vector3.left * flipTorque * 100);
+                }
+
+                // Turn logic
                 float TurnMultiplyer = turnCurve.Evaluate(carVelocity.magnitude / MaxSpeed);
                 carBody.AddTorque(Vector3.up * horizontalInput * turn * 100 * TurnMultiplyer);
             }
 
+            // Rotate the car body to align with the world's up direction (gravity)
             carBody.MoveRotation(Quaternion.Slerp(carBody.rotation, Quaternion.FromToRotation(carBody.transform.up, Vector3.up) * carBody.transform.rotation, 0.02f));
+
+            // Apply gravity
             rb.velocity = Vector3.Lerp(rb.velocity, rb.velocity + Vector3.down * gravity, Time.deltaTime * gravity);
         }
     }
@@ -193,10 +212,41 @@ public class VehicleController : MonoBehaviour
         {
             FW.localRotation = Quaternion.Slerp(FW.localRotation, Quaternion.Euler(FW.localRotation.eulerAngles.x,
                                30 * horizontalInput, FW.localRotation.eulerAngles.z), 0.1f);
-            FW.GetChild(0).localRotation = rb.transform.localRotation;
+
+            // Get the angular velocity of rb
+            Vector3 angularVelocity = rb.angularVelocity;
+
+            // Calculate the magnitude of angular velocity to get the speed
+            float rotationSpeed = angularVelocity.magnitude;
+
+            // Determine the sign of the angular velocity (positive or negative rotation)
+            float rotationDirection = Mathf.Sign(Vector3.Dot(angularVelocity, rb.transform.right));
+
+            // Calculate the rotation amount for the wheel
+            float wheelRotationAmount = rotationSpeed * FWheelRotationMultiplier * rotationDirection;
+
+            // Apply the rotation to the wheel
+            FW.GetChild(0).Rotate(Vector3.right, wheelRotationAmount);
         }
-        RearWheels[0].localRotation = rb.transform.localRotation;
-        RearWheels[1].localRotation = rb.transform.localRotation;
+
+        foreach (Transform RW in RearWheels)
+        {
+            // Get the angular velocity of rb
+            Vector3 angularVelocity = rb.angularVelocity;
+
+            // Calculate the magnitude of angular velocity to get the speed
+            float rotationSpeed = angularVelocity.magnitude;
+
+            // Determine the sign of the angular velocity (positive or negative rotation)
+            float rotationDirection = Mathf.Sign(Vector3.Dot(angularVelocity, rb.transform.right));
+
+            // Calculate the rotation amount for the wheel
+            float wheelRotationAmount = rotationSpeed * wheelRotationMultiplier * rotationDirection;
+
+            // Apply the rotation to the wheel
+            RW.GetChild(0).Rotate(Vector3.right, wheelRotationAmount);
+        }
+
 
         //Body
         if (carVelocity.z > 1)
@@ -240,6 +290,7 @@ public class VehicleController : MonoBehaviour
                 return false;
             }
         }
-        else { return false; }
+
+        return false;
     }
 }
